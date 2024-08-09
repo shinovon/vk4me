@@ -337,7 +337,7 @@ public class ContentController {
                 int offset = ((Integer) next).intValue() * 5;
                 final AudioGetResponse rr = (AudioGetResponse) new AudioGet().setOwnerId(id).setCount(5).setOffset(offset).execute();
                 if (rr != null && rr.hasItems()) {
-                    if (rr.items.length < 5) {
+                    if (offset + rr.items.length >= rr.count) {
                         noNext = true;
                     }
 
