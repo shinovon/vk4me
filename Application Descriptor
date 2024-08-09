@@ -1,0 +1,31 @@
+LGE-MIDlet-Allowed-background: yes
+MVM-Pause-Background: false
+MIDlet-Info-URL: http://vk4me.crx.moe/
+Nokia-UI-Enhancement: MusicKeysSupported,CanvasHasBackground
+Nokia-MIDlet-S60-Selection-Key-Compatibility: true
+Nokia-MIDlet-UID-1: 0xA26C935F
+MicroEdition-Configuration: CLDC-1.1
+MIDlet-Name: VK4ME
+Nokia-Scalable-Icon: /res/new/ph.svg
+LGE-MIDlet-Display-Mode: both
+MIDlet-Vendor: curoviyxru
+LGE-MIDlet-Height: 480
+MIDlet-Permissions-Opt: javax.microedition.io.Connector.file.read, javax.microedition.io.Connector.http, javax.microedition.io.Connector.file.write, javax.microedition.io.Connector.https, javax.microedition.io.Connector.ssl
+Nokia-MIDlet-Flip-Close: pause
+LGE-MIDlet-TargetLCD-Height: 320
+MIDlet-Description: Unofficial client for Russian social network VK for devices supporting CLDC 1.1 and MIDP 2.0.
+MIDlet-1: VK4ME,/res/new/phmini.png,ru.curoviyxru.phoenix.midlet.Midlet
+MIDlet-Jar-URL: latest.jar
+Nokia-MIDlet-No-Exit: true
+Nokia-Scalable-Icon-MIDlet-1: /res/new/ph.svg
+Nokia-MIDlet-Background-Event: pause
+MIDlet-Version: 3.3.3
+LGE-MIDlet-Width: 320
+LGE-MIDlet-Indicator: HIDE
+LGE-MIDlet-TargetLCD-Width: 480
+Nokia-MIDlet-Splash-Screen-Image: suppress
+Nokia-MIDlet-On-Screen-Keypad: no
+progressive_download: enabled
+LGE-MIDlet-On-Screen-Keypad: no
+MIDlet-Icon: /res/new/phmini.png
+MicroEdition-Profile: MIDP-2.0
