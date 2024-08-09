@@ -544,12 +544,14 @@ public class PlayerContent extends Content implements PWListener {
             return;
         }
         index++;
+        loading = true;
+        renderIfNeeded();
+        p.stop();
         Audio a = getAudio();
-        if (a == null) {
-            stop();
-        } else {
+        if (a != null) {
             play(true);
         }
+        loading = false;
         renderIfNeeded();
     }
 
@@ -614,9 +616,9 @@ public class PlayerContent extends Content implements PWListener {
             return null;
         }
     	if (list != null) {
-    		if (list.size() < index) {
-    			((Runnable) list).run();
-    			if (list.size() < index) return null;
+    		if (list.size() <= index) {
+    			((ScrollContent) list).process();
+    			if (list.size() <= index) return null;
     		}
     		return (Audio) ((UserAudioView) list.at(index)).getAttachment();
     	}
@@ -750,6 +752,8 @@ public class PlayerContent extends Content implements PWListener {
         if (repeatMode == NORMAL || repeatMode == REPEAT_ALL) {
             index++;
         }
+        loading = true;
+        renderIfNeeded();
         Audio a = getAudio();
         if (a == null) {
             if (repeatMode == REPEAT_ALL) {
@@ -760,6 +764,7 @@ public class PlayerContent extends Content implements PWListener {
         } else {
             play(true);
         }
+        loading = false;
     }
 
     private void paintBottomBar(Graphics g, int pX, int i, int renderWidth, int renderHeight, int fullHeight) {
