@@ -8,6 +8,7 @@ import midletintegration.ProtocolNotSupportedException;
 import midletintegration.Util;
 import ru.curoviyxru.j2vk.PageStorage;
 import ru.curoviyxru.j2vk.ProgressProvider;
+import ru.curoviyxru.j2vk.VKConstants;
 import ru.curoviyxru.j2vk.api.objects.Attachment;
 import ru.curoviyxru.j2vk.api.objects.PhotoAlbum;
 import ru.curoviyxru.j2vk.api.objects.VKObject;
@@ -362,16 +363,21 @@ public class AttachmentView extends ListItem implements ProgressProvider {
         switch (Midlet.instance.config.downloadMode) {
             case 0:
                 PopupMenu ask = new PopupMenu();
-                ask.add(new PopupButton(Localization.get("settings.addToLibrary")) {
-                    public void actionPerformed() {
-                        AppCanvas.instance.closePopup();
-                        addAudio(d);
-                    }
-                }.setIcon("new/content-copy.rle"));
+                if (!(this instanceof UserAudioView) && d.owner_id != VKConstants.account.getId()) {
+	                ask.add(new PopupButton(Localization.get("settings.addToLibrary")) {
+	                    public void actionPerformed() {
+	                        AppCanvas.instance.closePopup();
+	                        addAudio(d);
+	                    }
+	                }.setIcon("new/content-copy.rle"));
+                }
+                final Playlist playlist = !(this instanceof UserAudioView) ?
+                		new Playlist((Audio) linked) : new Playlist(((UserAudioView) this).ownerid);
+                final int idx = !(this instanceof UserAudioView) ? 0 : ((UserAudioView) this).index;
                 ask.add(new PopupButton(Localization.get("action.playAudio")) {
                     public void actionPerformed() {
                         AppCanvas.instance.closePopup();
-                        PlayerContent.play(AttachmentView.this.content, new Playlist((Audio) linked), 0);
+                        PlayerContent.play(AttachmentView.this.content, playlist, idx);
                     }
                 }.setIcon("new/play.rle"));
                 ask.add(new PopupButton(Localization.get("settings.downloadFile")) {

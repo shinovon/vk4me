@@ -41,6 +41,7 @@ import ru.curoviyxru.phoenix.Logger;
 import ru.curoviyxru.phoenix.midlet.Midlet;
 import ru.curoviyxru.phoenix.ui.AppCanvas;
 import ru.curoviyxru.phoenix.ui.AttachmentView;
+import ru.curoviyxru.phoenix.ui.UserAudioView;
 import ru.curoviyxru.phoenix.ui.Content;
 import ru.curoviyxru.phoenix.ui.Field;
 import ru.curoviyxru.phoenix.ui.ImageItem;
@@ -344,7 +345,7 @@ public class ContentController {
                     for (int i1 = 0; i1 < rr.items.length; i1++) {
                         final Audio u = rr.items[i1];
                         //todo slim style setting
-                        add(getTrackItem(u, i1 + offset));
+                        add(getTrackItem(u, i1 + offset, id));
                     }
                 } else {
                     noNext = true;
@@ -607,8 +608,8 @@ public class ContentController {
         }.parent(parent));
     }
 
-    private static ListItem getTrackItem(final Audio audio, final int i) {
-        return (ListItem) new AttachmentView(audio);
+    private static ListItem getTrackItem(final Audio audio, final int i, long id) {
+        return (ListItem) new UserAudioView(audio, i, id);
     }
 
     public static void showPlayerOrTracks(Content parent) {
