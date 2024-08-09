@@ -608,11 +608,15 @@ public class PlayerContent extends Content implements PWListener {
         if (index >= pl.audios.size()) {
             switch (pl.type) {
                 case Playlist.USER_TRACKS:
-                    AudioGetResponse aresponse = (AudioGetResponse) new AudioGet().setCount(index + 1 - pl.audios.size()).setOffset(pl.audios.size()).setOwnerId(pl.owner_id).execute();
+                    AudioGetResponse aresponse = (AudioGetResponse) new AudioGet().setCount(index + 1 - pl.offset).setOffset(pl.offset).setOwnerId(pl.owner_id).execute();
                     if (aresponse != null && aresponse.hasItems()) {
                         for (int i = 0; i < aresponse.items.length; i++) {
                             pl.audios.addElement(aresponse.items[i]);
                         }
+                    }
+                    pl.offset += index + 1 - pl.offset;
+                    if (aresponse != null && aresponse.items.length == 0) { // repeat
+                    	return getAudio();
                     }
                     break;
                 case Playlist.PLAYLIST:

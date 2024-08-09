@@ -17,6 +17,7 @@ public class Playlist {
     int id;
     byte type;
     Vector audios = new Vector();
+	public int offset;
     public static final byte PLAYLIST = 1, ONE_TRACK = 2, USER_TRACKS = 0;
 
     public Playlist(AudioPlaylist playlist) {
