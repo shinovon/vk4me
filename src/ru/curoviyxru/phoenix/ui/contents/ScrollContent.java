@@ -10,7 +10,7 @@ import ru.curoviyxru.phoenix.ui.PopupMenu;
  *
  * @author curoviyxru, Roman Lahin
  */
-public class ScrollContent extends Content {
+public class ScrollContent extends Content implements Runnable {
 
     public Object next, addon;
     public final Object lock = new Object();
@@ -76,22 +76,23 @@ public class ScrollContent extends Content {
         }
         
         loading = true;
-        new Thread() {
-            public void run() {
-                try {
-                    synchronized (lock) {
-                        while (!noNext && totalHeight - toScrollY - AppCanvas.instance.contentHeight < AppCanvas.instance.perLineSpace)
-                            process();
-                        loading = false;
-                    }
-                } catch (Exception e) {
-                    AppCanvas.instance.dropError(e);
-                } catch (OutOfMemoryError error) {
-                    imOut();
-                }
-                
-                AppCanvas.instance.setProgress(false);
-            }
-        }.start();
+        new Thread(this).start();
+    }
+
+
+    public void run() {
+    	 try {
+             synchronized (lock) {
+                 while (!noNext && totalHeight - toScrollY - AppCanvas.instance.contentHeight < AppCanvas.instance.perLineSpace)
+                     process();
+                 loading = false;
+             }
+         } catch (Exception e) {
+             AppCanvas.instance.dropError(e);
+         } catch (OutOfMemoryError error) {
+             imOut();
+         }
+         
+         AppCanvas.instance.setProgress(false);
     }
 }

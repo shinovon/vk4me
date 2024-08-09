@@ -41,6 +41,7 @@ import ru.curoviyxru.phoenix.Logger;
 import ru.curoviyxru.phoenix.midlet.Midlet;
 import ru.curoviyxru.phoenix.ui.AppCanvas;
 import ru.curoviyxru.phoenix.ui.AttachmentView;
+import ru.curoviyxru.phoenix.ui.UserAudioView;
 import ru.curoviyxru.phoenix.ui.Content;
 import ru.curoviyxru.phoenix.ui.Field;
 import ru.curoviyxru.phoenix.ui.ImageItem;
@@ -245,7 +246,7 @@ public class ContentController {
         }.setIcon("new/image.rle").ignoreUnreadBackground(true));
         menu.add(new ListItem(Localization.get("element.myMusic"), ListItem.UNREAD) {
             public void actionPerformed() {
-                showTracks(menu);
+                showPlayerOrTracks(menu);
             }
         }.setIcon("new/music-note.rle").ignoreUnreadBackground(true));
         menu.add(new ListItem(Localization.get("title.docs"), ListItem.UNREAD) {
@@ -325,26 +326,37 @@ public class ContentController {
 
     public static void showTracks(final Content parent, final long id) {
         AppCanvas.instance.goTo(new ScrollContent(VKConstants.account.getId() == id ? Localization.get("title.myMusic") : Localization.get("title.usersMusic", (PageStorage.get(id) != null ? PageStorage.get(id).getMessageTitle(UsersGet.GEN) : Localization.get("general.unknownUser"))), true) {
-            public void process() {
+			{
+				final Content p = this;
+				rightSoft.add(new PopupButton(Localization.get("action.goToPlayer")) {
+					public void actionPerformed() {
+						showPlayer(p);
+		                AppCanvas.instance.closePopup();
+					}
+				}.setIcon("new/music-note.rle"));
+			}
+        	
+        	public void process() {
                 AppCanvas.instance.setProgress(true);
                 boolean empty = next == null;
                 if (empty) {
                     next = new Integer(-1);
+                    addon = new Integer(0);
                 }
 
                 next = new Integer(((Integer) next).intValue() + 1);
-
-                int offset = ((Integer) next).intValue() * 5;
-                final AudioGetResponse rr = (AudioGetResponse) new AudioGet().setOwnerId(id).setCount(5).setOffset(offset).execute();
+                
+                int offset = ((Integer) next).intValue() * 20;
+                final AudioGetResponse rr = (AudioGetResponse) new AudioGet().setOwnerId(id).setCount(20).setOffset(offset).execute();
                 if (rr != null && rr.hasItems()) {
-                    if (rr.items.length < 5) {
+                    if (offset + rr.items.length >= rr.count) {
                         noNext = true;
                     }
 
                     for (int i1 = 0; i1 < rr.items.length; i1++) {
                         final Audio u = rr.items[i1];
                         //todo slim style setting
-                        add(getTrackItem(u, i1 + offset));
+                        add(getTrackItem(u, size(), id));
                     }
                 } else {
                     noNext = true;
@@ -607,8 +619,8 @@ public class ContentController {
         }.parent(parent));
     }
 
-    private static ListItem getTrackItem(final Audio audio, final int i) {
-        return (ListItem) new AttachmentView(audio);
+    private static ListItem getTrackItem(final Audio audio, final int i, long id) {
+        return (ListItem) new UserAudioView(audio, i, id);
     }
 
     public static void showPlayerOrTracks(Content parent) {

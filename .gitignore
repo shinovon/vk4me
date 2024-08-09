@@ -10,3 +10,8 @@ iconpacker/nbproject/genfiles.properties
 /iconpacker/build/
 iconpacker/*.png
 iconpacker/*.rle
+/.mtj.tmp/
+/bin/
+deployed
+/.settings
+.mtj

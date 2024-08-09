@@ -532,3 +532,4 @@ settings.keyVibroTime=Key vibration length
 settings.notVibroTime=Notify vibration length
 element.timeInMSecs=Time in milliseconds
 action.playAudio=Play
+action.goToPlayer=Go to player

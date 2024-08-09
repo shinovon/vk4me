@@ -54,7 +54,7 @@ public class ImageViewer extends Content implements ImageProvider, ProgressProvi
 					
 					if(canSwitchResolution()) insert(resSwitchButton, 0);
 					
-					updateHeights(getWidth(), size()); //recalculate container height
+					updateHeights(getWidth(), this.size()); //recalculate container height
 				}
 				
 				super.actionPerformed(x, y, anchor);

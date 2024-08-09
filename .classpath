@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="j2vk/json-org/src"/>
+	<classpathentry kind="src" path="j2vk/src"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="nokiaui.jar"/>
+	<classpathentry kind="con" path="org.elipse.mtj.JavaMEContainer/KEmulator nnmod/KEmulator"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

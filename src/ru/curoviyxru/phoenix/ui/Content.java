@@ -89,7 +89,7 @@ public class Content {
     }
 
     public void renderIfNeeded() {
-        if (AppCanvas.instance.content != null && AppCanvas.instance.content.hashCode() == this.hashCode()) {
+        if (AppCanvas.instance.content == this) {
             AppCanvas.instance.render();
         }
     }

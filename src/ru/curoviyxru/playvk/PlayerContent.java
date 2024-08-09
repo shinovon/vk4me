@@ -23,7 +23,9 @@ import ru.curoviyxru.phoenix.ui.ProgressBar;
 import ru.curoviyxru.phoenix.ui.RenderUtil;
 import ru.curoviyxru.phoenix.ui.Slider;
 import ru.curoviyxru.phoenix.ui.SuperString;
+import ru.curoviyxru.phoenix.ui.UserAudioView;
 import ru.curoviyxru.phoenix.ui.contents.ContentController;
+import ru.curoviyxru.phoenix.ui.contents.ScrollContent;
 import ru.curoviyxru.playvk.PlayerWrapper.PWListener;
 
 /**
@@ -67,6 +69,7 @@ public class PlayerContent extends Content implements PWListener {
             slideX, slideY;
     int repeatMode = 0;
     boolean sliderPressed;
+	private Content list;
     public static final int NORMAL = 0, REPEAT_ALL = 1, REPEAT_ONCE = 2; //, SHUFFLE = 3;
 
     public void paint(Graphics g, int pX, int pY, int renderWidth, int renderHeight, int fullHeight, boolean drawBG) {
@@ -480,9 +483,14 @@ public class PlayerContent extends Content implements PWListener {
 
     public static void play(Content parent, Playlist pl, int a) {
         if (instance != null) {
+        	instance.setList(a != -1 ? parent : null);
             instance.playThere(pl, a);
         }
         ContentController.showPlayer(parent);
+    }
+    
+    void setList(Content parent) {
+    	this.list = parent;
     }
 
     public void playThere(Playlist pl, int a) {
@@ -536,12 +544,14 @@ public class PlayerContent extends Content implements PWListener {
             return;
         }
         index++;
+        loading = true;
+        renderIfNeeded();
+        p.stop();
         Audio a = getAudio();
-        if (a == null) {
-            stop();
-        } else {
+        if (a != null) {
             play(true);
         }
+        loading = false;
         renderIfNeeded();
     }
 
@@ -605,9 +615,16 @@ public class PlayerContent extends Content implements PWListener {
         if (pl == null || index < 0) {
             return null;
         }
+    	if (list != null) {
+    		if (list.size() <= index) {
+    			((ScrollContent) list).process();
+    			if (list.size() <= index) return null;
+    		}
+    		return (Audio) ((UserAudioView) list.at(index)).getAttachment();
+    	}
         if (index >= pl.audios.size()) {
             switch (pl.type) {
-                case Playlist.USER_TRACKS:
+            	case Playlist.USER_TRACKS:
                     AudioGetResponse aresponse = (AudioGetResponse) new AudioGet().setCount(index + 1 - pl.audios.size()).setOffset(pl.audios.size()).setOwnerId(pl.owner_id).execute();
                     if (aresponse != null && aresponse.hasItems()) {
                         for (int i = 0; i < aresponse.items.length; i++) {
@@ -688,27 +705,29 @@ public class PlayerContent extends Content implements PWListener {
     //    AppCanvas.instance.showPopup(getPopup());
     //}
 
-    //private PopupMenu getPopup() {
-    //    if (popup != null) {
-    //        return popup;
-    //    }
-    //
-    //    popup = new PopupMenu(Localization.get("general.actions"));
-    //
-    //    return popup;
-    //}
+	private PopupMenu getPopup() {
+		if (popup != null) {
+			return popup;
+		}
 
-    //public void rightSoft() {
-    //    if (AppCanvas.instance.popupOpened()) {
-    //       AppCanvas.instance.closePopup();
-    //        return;
-    //     }
-    //    menu();
-    //}
+		popup = new PopupMenu(Localization.get("title.playlist"));
 
-    //public String getRightSoft() {
-    //    return getPopup().title.toString();
-    //}
+		return popup;
+	}
+
+	public void rightSoft() {
+		if (AppCanvas.instance.popupOpened()) {
+			AppCanvas.instance.closePopup();
+			return;
+		}
+		if (list != null) {
+			AppCanvas.instance.goTo(list);
+		}
+	}
+
+	public String getRightSoft() {
+		return getPopup().title.toString();
+	}
 
     public void update(boolean fromCanvas) {
         if (hideTime > 0) {
@@ -735,6 +754,8 @@ public class PlayerContent extends Content implements PWListener {
         if (repeatMode == NORMAL || repeatMode == REPEAT_ALL) {
             index++;
         }
+        loading = true;
+        renderIfNeeded();
         Audio a = getAudio();
         if (a == null) {
             if (repeatMode == REPEAT_ALL) {
@@ -745,6 +766,7 @@ public class PlayerContent extends Content implements PWListener {
         } else {
             play(true);
         }
+        loading = false;
     }
 
     private void paintBottomBar(Graphics g, int pX, int i, int renderWidth, int renderHeight, int fullHeight) {
