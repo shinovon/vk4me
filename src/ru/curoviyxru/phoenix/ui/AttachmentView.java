@@ -897,4 +897,8 @@ public class AttachmentView extends ListItem implements ProgressProvider {
     public String getName() {
         return linked == null ? null : linked.toString();
     }
+    
+    public Attachment getAttachment() {
+    	return (Attachment) linked;
+    }
 }

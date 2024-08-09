@@ -23,7 +23,9 @@ import ru.curoviyxru.phoenix.ui.ProgressBar;
 import ru.curoviyxru.phoenix.ui.RenderUtil;
 import ru.curoviyxru.phoenix.ui.Slider;
 import ru.curoviyxru.phoenix.ui.SuperString;
+import ru.curoviyxru.phoenix.ui.UserAudioView;
 import ru.curoviyxru.phoenix.ui.contents.ContentController;
+import ru.curoviyxru.phoenix.ui.contents.ScrollContent;
 import ru.curoviyxru.playvk.PlayerWrapper.PWListener;
 
 /**
@@ -67,6 +69,7 @@ public class PlayerContent extends Content implements PWListener {
             slideX, slideY;
     int repeatMode = 0;
     boolean sliderPressed;
+	private Content list;
     public static final int NORMAL = 0, REPEAT_ALL = 1, REPEAT_ONCE = 2; //, SHUFFLE = 3;
 
     public void paint(Graphics g, int pX, int pY, int renderWidth, int renderHeight, int fullHeight, boolean drawBG) {
@@ -480,9 +483,14 @@ public class PlayerContent extends Content implements PWListener {
 
     public static void play(Content parent, Playlist pl, int a) {
         if (instance != null) {
+        	instance.setList(a != -1 ? parent : null);
             instance.playThere(pl, a);
         }
         ContentController.showPlayer(parent);
+    }
+    
+    void setList(Content parent) {
+    	this.list = parent;
     }
 
     public void playThere(Playlist pl, int a) {
@@ -605,18 +613,21 @@ public class PlayerContent extends Content implements PWListener {
         if (pl == null || index < 0) {
             return null;
         }
+    	if (list != null) {
+    		if (list.size() < index) {
+    			((Runnable) list).run();
+    			if (list.size() < index) return null;
+    		}
+    		return (Audio) ((UserAudioView) list.at(index)).getAttachment();
+    	}
         if (index >= pl.audios.size()) {
             switch (pl.type) {
-                case Playlist.USER_TRACKS:
-                    AudioGetResponse aresponse = (AudioGetResponse) new AudioGet().setCount(index + 1 - pl.offset).setOffset(pl.offset).setOwnerId(pl.owner_id).execute();
+            	case Playlist.USER_TRACKS:
+                    AudioGetResponse aresponse = (AudioGetResponse) new AudioGet().setCount(index + 1 - pl.audios.size()).setOffset(pl.audios.size()).setOwnerId(pl.owner_id).execute();
                     if (aresponse != null && aresponse.hasItems()) {
                         for (int i = 0; i < aresponse.items.length; i++) {
                             pl.audios.addElement(aresponse.items[i]);
                         }
-                    }
-                    pl.offset += index + 1 - pl.offset;
-                    if (aresponse != null && aresponse.items.length == 0) { // repeat
-                    	return getAudio();
                     }
                     break;
                 case Playlist.PLAYLIST:

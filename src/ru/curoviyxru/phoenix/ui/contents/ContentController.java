@@ -337,7 +337,6 @@ public class ContentController {
                 next = new Integer(((Integer) next).intValue() + 1);
                 
                 int offset = ((Integer) next).intValue() * 5;
-                int listOffset = ((Integer) addon).intValue();
                 final AudioGetResponse rr = (AudioGetResponse) new AudioGet().setOwnerId(id).setCount(5).setOffset(offset).execute();
                 if (rr != null && rr.hasItems()) {
                     if (offset + rr.items.length >= rr.count) {
@@ -347,9 +346,8 @@ public class ContentController {
                     for (int i1 = 0; i1 < rr.items.length; i1++) {
                         final Audio u = rr.items[i1];
                         //todo slim style setting
-                        add(getTrackItem(u, i1 + listOffset, id));
+                        add(getTrackItem(u, size(), id));
                     }
-                    addon = new Integer(((Integer) addon).intValue() + rr.items.length);
                 } else {
                     noNext = true;
                     if (rr == null) {
