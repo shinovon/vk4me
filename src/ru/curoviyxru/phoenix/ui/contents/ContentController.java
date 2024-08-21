@@ -246,7 +246,7 @@ public class ContentController {
         }.setIcon("new/image.rle").ignoreUnreadBackground(true));
         menu.add(new ListItem(Localization.get("element.myMusic"), ListItem.UNREAD) {
             public void actionPerformed() {
-                showTracks(menu);
+                showPlayerOrTracks(menu);
             }
         }.setIcon("new/music-note.rle").ignoreUnreadBackground(true));
         menu.add(new ListItem(Localization.get("title.docs"), ListItem.UNREAD) {
