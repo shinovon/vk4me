@@ -532,3 +532,4 @@ settings.keyVibroTime=Длина вибрации кнопок
 settings.notVibroTime=Длина вибрации уведомлений
 element.timeInMSecs=Время в миллисекундах
 action.playAudio=Воспроизвести
+action.goToPlayer=Открыть плеер

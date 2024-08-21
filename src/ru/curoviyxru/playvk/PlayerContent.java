@@ -705,27 +705,29 @@ public class PlayerContent extends Content implements PWListener {
     //    AppCanvas.instance.showPopup(getPopup());
     //}
 
-    //private PopupMenu getPopup() {
-    //    if (popup != null) {
-    //        return popup;
-    //    }
-    //
-    //    popup = new PopupMenu(Localization.get("general.actions"));
-    //
-    //    return popup;
-    //}
+	private PopupMenu getPopup() {
+		if (popup != null) {
+			return popup;
+		}
 
-    //public void rightSoft() {
-    //    if (AppCanvas.instance.popupOpened()) {
-    //       AppCanvas.instance.closePopup();
-    //        return;
-    //     }
-    //    menu();
-    //}
+		popup = new PopupMenu(Localization.get("title.playlist"));
 
-    //public String getRightSoft() {
-    //    return getPopup().title.toString();
-    //}
+		return popup;
+	}
+
+	public void rightSoft() {
+		if (AppCanvas.instance.popupOpened()) {
+			AppCanvas.instance.closePopup();
+			return;
+		}
+		if (list != null) {
+			AppCanvas.instance.goTo(list);
+		}
+	}
+
+	public String getRightSoft() {
+		return getPopup().title.toString();
+	}
 
     public void update(boolean fromCanvas) {
         if (hideTime > 0) {

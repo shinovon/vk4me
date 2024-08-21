@@ -326,7 +326,17 @@ public class ContentController {
 
     public static void showTracks(final Content parent, final long id) {
         AppCanvas.instance.goTo(new ScrollContent(VKConstants.account.getId() == id ? Localization.get("title.myMusic") : Localization.get("title.usersMusic", (PageStorage.get(id) != null ? PageStorage.get(id).getMessageTitle(UsersGet.GEN) : Localization.get("general.unknownUser"))), true) {
-            public void process() {
+			{
+				final Content p = this;
+				rightSoft.add(new PopupButton(Localization.get("action.goToPlayer")) {
+					public void actionPerformed() {
+						showPlayer(p);
+		                AppCanvas.instance.closePopup();
+					}
+				}.setIcon("new/music-note.rle"));
+			}
+        	
+        	public void process() {
                 AppCanvas.instance.setProgress(true);
                 boolean empty = next == null;
                 if (empty) {
