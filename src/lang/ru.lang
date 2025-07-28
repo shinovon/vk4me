@@ -534,3 +534,4 @@ element.timeInMSecs=Время в миллисекундах
 action.playAudio=Воспроизвести
 action.goToPlayer=Открыть плеер
 element.loginWithToken=Поле логина как токен
+element.loginTokenFile=Войти с токен файлом

@@ -1,6 +1,8 @@
 package ru.curoviyxru.phoenix.ui.contents;
 
+import java.io.InputStream;
 import java.util.Vector;
+import javax.microedition.io.Connector;
 import javax.microedition.lcdui.Graphics;
 import ru.curoviyxru.j2vk.HTTPClient;
 import ru.curoviyxru.j2vk.PageStorage;
@@ -36,6 +38,7 @@ import ru.curoviyxru.j2vk.api.responses.docs.DocsGetResponse;
 import ru.curoviyxru.j2vk.api.responses.friends.FriendsGetRequestsResponse;
 import ru.curoviyxru.j2vk.api.responses.photos.PhotosGetAlbumsResponse;
 import ru.curoviyxru.j2vk.api.responses.photos.PhotosGetResponse;
+import ru.curoviyxru.j2vk.platform.Charset;
 import ru.curoviyxru.phoenix.Localization;
 import ru.curoviyxru.phoenix.Logger;
 import ru.curoviyxru.phoenix.midlet.Midlet;
@@ -44,6 +47,7 @@ import ru.curoviyxru.phoenix.ui.AttachmentView;
 import ru.curoviyxru.phoenix.ui.UserAudioView;
 import ru.curoviyxru.phoenix.ui.Content;
 import ru.curoviyxru.phoenix.ui.Field;
+import ru.curoviyxru.phoenix.ui.FilePicker;
 import ru.curoviyxru.phoenix.ui.ImageItem;
 import ru.curoviyxru.phoenix.ui.Label;
 import ru.curoviyxru.phoenix.ui.ListItem;
@@ -175,6 +179,27 @@ public class ContentController {
         }
     }
     
+    public static void loginTokenFile(Content authContent, final boolean rememberMe) {
+        AppCanvas.instance.goTo(new FilePicker(false, authContent) {
+            public void filePicked(final String path) {
+                new Thread() {
+                    public void run() {
+                        try {
+                            javax.microedition.io.file.FileConnection conn = (javax.microedition.io.file.FileConnection) Connector.open(path, Connector.READ);
+                            InputStream is = conn.openInputStream();
+                            String token = new String(HTTPClient.readStream(is), Charset.current).trim();
+                            is.close();
+                            conn.close();
+                            authWithToken(token, rememberMe);
+                        } catch (Exception e) {
+                            AppCanvas.instance.dropError(e);
+                        }
+                    }
+                }.start();
+            }
+        });
+    }
+    
     public static void showAuthWindow() {
         menu = null;
 
@@ -214,8 +239,12 @@ public class ContentController {
                 
             }
         }.setFont(true).setIcon("new/exit-to-app.rle"));
-        final ListItem li;
-        authContent.add(li = (ListItem) new ListItem(Localization.get("element.settings")) {
+        authContent.add(new ListItem(Localization.get("element.loginTokenFile")) {
+            public void actionPerformed() {
+                ContentController.loginTokenFile(authContent, RM.marked());
+            }
+        }.setFont(true).setIcon("new/file.rle"));
+        authContent.add(new ListItem(Localization.get("element.settings")) {
             public void actionPerformed() {
                 ContentController.showSettings(authContent, false);
             }

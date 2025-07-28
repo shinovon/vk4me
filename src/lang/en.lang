@@ -534,3 +534,4 @@ element.timeInMSecs=Time in milliseconds
 action.playAudio=Play
 action.goToPlayer=Go to player
 element.loginWithToken=Login field as token
+element.loginTokenFile=Login with token file
