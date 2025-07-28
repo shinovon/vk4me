@@ -217,7 +217,7 @@ public class Theme {
 
     public Theme() {
         entry.name = "Classic Dark";
-        entry.version = "3.3.3";
+        entry.version = "3.3.4";
     }
 
     public Theme(byte[] bytes) throws Exception {
