@@ -38,16 +38,15 @@ public class Logger implements ILogger {
     
     public static void l(String s) {
         if (s == null) return;
-//        try {
-//            if (enabled) {
-//                s = "[" + TextUtil.getTimeString(System.currentTimeMillis() / 1000, true) + "] " + s;
-//                buf.append(s).append('\n');
-//                System.out.println(s);
-//            }
-//        } catch (OutOfMemoryError e) {
-//            clear();
-//        }
-        System.out.println(s);
+        try {
+            if (enabled) {
+                s = "[" + TextUtil.getTimeString(System.currentTimeMillis() / 1000, true) + "] " + s;
+                buf.append(s).append('\n');
+                System.out.println(s);
+            }
+        } catch (OutOfMemoryError e) {
+            clear();
+        }
     }
 
     public static void flushToFile(String path) {

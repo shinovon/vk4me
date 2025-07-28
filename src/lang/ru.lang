@@ -533,3 +533,4 @@ settings.notVibroTime=Длина вибрации уведомлений
 element.timeInMSecs=Время в миллисекундах
 action.playAudio=Воспроизвести
 action.goToPlayer=Открыть плеер
+element.loginWithToken=Поле логина как токен

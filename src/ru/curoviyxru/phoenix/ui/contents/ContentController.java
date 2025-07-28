@@ -152,6 +152,29 @@ public class ContentController {
         AppCanvas.instance.showPopup(tfaContent);
     }
 
+    public static void authWithToken(final String token, final boolean rememberMe) {
+        Midlet.instance.config.httpPost();
+        AppCanvas.instance.setProgress(true);
+        new Thread() {
+            public void run() {
+                Midlet.instance.config.rms_access_token = token;
+                if (rememberMe) {
+                    Midlet.instance.config.saveToken();
+                }
+                Midlet.instance.config.tryAuth();
+                AppCanvas.instance.setProgress(false);
+            }
+        }.start();
+    }
+
+    public static void authorize(final Field LF, PasswordField PF, final ListItem RM, ListItem TKN) {
+        if (TKN.marked()) {
+            authWithToken(LF.getText(), RM.marked());
+        } else {
+            auth(true, null, null, LF.getText(), PF.getText(), RM.marked(), null);
+        }
+    }
+    
     public static void showAuthWindow() {
         menu = null;
 
@@ -161,9 +184,11 @@ public class ContentController {
         final Field LF = new Field(Localization.get("element.login"));
         final PasswordField PF = new PasswordField(Localization.get("element.password"));
         final ListItem RM = (ListItem) new ListItem(Localization.get("element.rememberPassword"), ListItem.CHECK);
+        final ListItem TKN = (ListItem) new ListItem(Localization.get("element.loginWithToken"), ListItem.CHECK);
         authContent.add(LF); //.setConstrains(TextField.SENSITIVE | TextField.NON_PREDICTIVE));
         authContent.add(PF);
         authContent.add(RM);
+        authContent.add(TKN);
         authContent.add(new ListItem(Localization.get("action.logIn")) {
             public void actionPerformed() {
                 switch (Midlet.instance.config.network_mode) {
@@ -171,17 +196,17 @@ public class ContentController {
                     case 4:
                         AppCanvas.instance.dropMessage(Localization.get("general.caution"), Localization.get("element.openvkDisclaimer"), new Runnable() {
                             public void run() {
-                                auth(true, null, null, LF.getText(), PF.getText(), RM.marked(), null);
+                                authorize(LF, PF, RM, TKN);
                             }
                         });
                         break;
                     case 1:
-                        auth(true, null, null, LF.getText(), PF.getText(), RM.marked(), null);
+                        authorize(LF, PF, RM, TKN);
                         break;
                     default:
                         AppCanvas.instance.dropMessage(Localization.get("general.caution"), Localization.get("element.proxyDisclaimer"), new Runnable() {
                             public void run() {
-                                auth(true, null, null, LF.getText(), PF.getText(), RM.marked(), null);
+                                authorize(LF, PF, RM, TKN);
                             }
                         });
                         break;
